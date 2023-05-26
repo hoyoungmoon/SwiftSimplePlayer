@@ -16,6 +16,7 @@
 		AB65A7BC2A1B5F010071C59B /* SwiftSimplePlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB65A7BB2A1B5F010071C59B /* SwiftSimplePlayerTests.swift */; };
 		AB65A7C62A1B5F010071C59B /* SwiftSimplePlayerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB65A7C52A1B5F010071C59B /* SwiftSimplePlayerUITests.swift */; };
 		AB65A7C82A1B5F010071C59B /* SwiftSimplePlayerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB65A7C72A1B5F010071C59B /* SwiftSimplePlayerUITestsLaunchTests.swift */; };
+		ABA1DB482A1DCF11005AEDE3 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA1DB472A1DCF11005AEDE3 /* Video.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		AB65A7C12A1B5F010071C59B /* SwiftSimplePlayerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftSimplePlayerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB65A7C52A1B5F010071C59B /* SwiftSimplePlayerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftSimplePlayerUITests.swift; sourceTree = "<group>"; };
 		AB65A7C72A1B5F010071C59B /* SwiftSimplePlayerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftSimplePlayerUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		ABA1DB472A1DCF11005AEDE3 /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 				AB65A7AD2A1B5F010071C59B /* Assets.xcassets */,
 				AB65A7AF2A1B5F010071C59B /* LaunchScreen.storyboard */,
 				AB65A7B22A1B5F010071C59B /* Info.plist */,
+				ABA1DB472A1DCF11005AEDE3 /* Video.swift */,
 			);
 			path = SwiftSimplePlayer;
 			sourceTree = "<group>";
@@ -259,6 +262,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB65A7A92A1B5EFF0071C59B /* ViewController.swift in Sources */,
+				ABA1DB482A1DCF11005AEDE3 /* Video.swift in Sources */,
 				AB65A7A52A1B5EFF0071C59B /* AppDelegate.swift in Sources */,
 				AB65A7A72A1B5EFF0071C59B /* SceneDelegate.swift in Sources */,
 			);
