@@ -15,63 +15,57 @@ class Video: UIView {
     var player: AVPlayer?
     var playerLayer: AVPlayerLayer?
     var playerViewController: AVPlayerViewController?
-    var button: UIButton?
-    var paused: Bool = false
+    var controls: UIButton = UIButton(type:.system)
+    var paused: Bool = true
+    var _source: VideoSource?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .blue
         
-        // video
-        setupVideo()
+        // background 재생
         setupAVAudioSession()
-        setupRemoteTransportControls()
         
-        // controls
-        button = UIButton(type: .system)
-        button?.frame = CGRect(origin: CGPoint(x: self.bounds.midX - 30, y: self.bounds.midY - 30), size:CGSize(width: 60, height: 60))
-        button?.setImage(UIImage(systemName: "play.fill"), for: .normal)
-        button?.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        addSubview(button!)
+        // Notification
+        NotificationCenter.default.addObserver(self, selector: #selector(handleEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
     
-    @objc private func buttonTapped() {
-        self.paused = !self.paused
-        button?.setImage(self.paused ? UIImage(systemName: "play.fill") : UIImage(systemName: "pause.fill"), for: .normal)
-        if(!self.paused){
+    @objc func buttonTapped() {
+        setPaused(pause: !self.paused)
+    }
+    
+    func setPaused(pause: Bool){
+        self.paused = pause
+        controls.setImage(self.paused ? UIImage(systemName: "play.fill") : UIImage(systemName: "pause.fill"), for: .normal)
+        if !self.paused {
             player?.play()
-            setupNowPlaying()
-        }else{
+            RemoteControls.shared.setupNowPlaying(video: self)
+        } else {
             player?.pause()
         }
-      
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupVideo() {
-        let url = NSURL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")!
+    func setupVideo(url: String, source: VideoSource?) {
+        self._source = source
+        guard let url = NSURL(string: url) else{
+            return
+        }
         player = AVPlayer(url: url as URL)
         playerLayer = AVPlayerLayer(player: player)
         playerLayer?.frame = self.bounds
         self.layer.addSublayer(playerLayer!)
-    }
-    
-    func setupNowPlaying() {
-        guard let playerItem:AVPlayerItem = player?.currentItem else {
-            return
-        }
-        var nowPlayingInfo = [String : Any]()
-        nowPlayingInfo[MPMediaItemPropertyTitle] = "My Test Movie"
         
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
-        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = playerItem.asset.duration.seconds
-        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = player?.rate
-
-        // Set the metadata
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+        // test controls
+        controls = UIButton(type: .system)
+        controls.frame = CGRect(origin: CGPoint(x: self.bounds.midX - 30, y: self.bounds.midY - 30), size:CGSize(width: 60, height: 60))
+        controls.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        controls.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        addSubview(controls)
     }
     
     private func setupAVAudioSession() {
@@ -80,29 +74,6 @@ class Video: UIView {
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
             print("AVAudioSession configuration failed: \(error)")
-        }
-    }
-    
-    private func setupRemoteTransportControls() {
-        // Get the shared MPRemoteCommandCenter
-        let commandCenter = MPRemoteCommandCenter.shared()
-        
-        // Add handler for Play Command
-        commandCenter.playCommand.addTarget { [unowned self] event in
-            if self.player?.rate == 0.0 {
-                self.player?.play()
-                return .success
-            }
-            return .commandFailed
-        }
-
-        // Add handler for Pause Command
-        commandCenter.pauseCommand.addTarget { [unowned self] event in
-            if self.player?.rate == 1.0 {
-                self.player?.pause()
-                return .success
-            }
-            return .commandFailed
         }
     }
     
@@ -123,6 +94,15 @@ class Video: UIView {
         
         viewController.present(playerViewController, animated: true) {
             playerViewController.player?.play()
+        }
+    }
+    
+    @objc private func handleEnterBackground() {
+        playerLayer?.player = nil
+    }
+    @objc private func handleEnterForeground() {
+        if let player = player, let playerLayer = playerLayer {
+            playerLayer.player = player
         }
     }
 }
